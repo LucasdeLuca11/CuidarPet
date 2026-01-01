@@ -1,0 +1,17 @@
+# .NET
+**/bin/
+**/obj/
+
+# Node / Frontend
+node_modules/
+dist/
+
+# Banco local
+*.db
+*.db-wal
+*.db-shm
+
+# Variáveis sensíveis
+.env
+appsettings.Development.json
+appsettings.json
