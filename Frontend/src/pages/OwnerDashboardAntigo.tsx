@@ -35,7 +35,7 @@ export default function OwnerDashboard() {
       return;
     }
 
-    if (user?.role  === "Veterinarian") {
+    if (user?.role  === 1) {
       navigate("/clinic");
       return;
     }

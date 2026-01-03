@@ -80,10 +80,8 @@ public class RegisterDto
 
     /// <summary>
     /// Tipo de empresa (obrigatório para Veterinários)
-    /// Ex: "Clínica", "PetShop", "Consultório", "Grooming"
     /// </summary>
-    [StringLength(100)]
-    public string? CompanyType { get; set; }
+    public CompanyType? CompanyType { get; set; }
 
     /// <summary>
     /// Descrição da empresa/serviços oferecidos (opcional)
@@ -111,7 +109,7 @@ public class RegisterDto
             if (string.IsNullOrWhiteSpace(CompanyDocument))
                 errors.Add("CNPJ é obrigatório para Veterinários");
 
-            if (string.IsNullOrWhiteSpace(CompanyType))
+            if (!CompanyType.HasValue)
                 errors.Add("Tipo de empresa é obrigatório para Veterinários");
         }
 

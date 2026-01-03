@@ -35,7 +35,7 @@ export default function AppointmentsPage() {
       return;
     }
 
-    if (user?.role !== "Tutor") {
+    if (user?.role !== 0) {
       navigate("/clinic");
       return;
     }

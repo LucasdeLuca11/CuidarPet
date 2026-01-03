@@ -39,7 +39,7 @@ export default function PetsPage() {
       return;
     }
 
-    if (user?.role !== "Tutor") {
+    if (user?.role !== 0) {
       navigate("/clinic");
       return;
     }

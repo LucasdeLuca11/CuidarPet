@@ -7,15 +7,24 @@
 // ============================================
 
 export enum UserRole {
-  Tutor = 'Tutor',
-  Veterinarian = 'Veterinarian',
-  Admin = 'Admin',
+  Tutor = 0,
+  Veterinarian = 1,
+  Admin = 2,
 }
 
 export enum AppointmentStatus {
   Scheduled = 'Scheduled',
   Completed = 'Completed',
   Cancelled = 'Cancelled',
+}
+
+export enum CompanyType {
+  Clinica = 1,
+  PetShop = 2,
+  ConsultorioVeterinario = 3,
+  Grooming = 4,
+  HospitalVeterinario = 5,
+  CrechePet = 6
 }
 
 // ============================================
@@ -181,13 +190,23 @@ export interface PaginatedResponse<T> {
 // Contexto de Autenticação
 // ============================================
 
+import { AuthUser } from './AuthUser'
 export interface AuthContextType {
-  user: User | null
+  user: AuthUser | null
   token: string | null
   isAuthenticated: boolean
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
-  logout: () => void
   register: (data: RegisterRequest) => Promise<void>
+  logout: () => void
   setToken: (token: string) => void
 }
+export * from './AuthUser'
+
+
+// export type AuthUser = {
+//   id: string
+//   name: string
+//   email: string
+//   role: UserRole
+// }

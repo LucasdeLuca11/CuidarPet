@@ -20,7 +20,7 @@ export default function Layout() {
   };
 
   // const isOwner = user?.role === "Tutor";
-  const isClinic = user?.role === "Veterinarian";
+  const isClinic = user?.role === 1;
 
   const ownerNavItems = [
     { icon: Home, label: "Dashboard", path: "/dashboard" },

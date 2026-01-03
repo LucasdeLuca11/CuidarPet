@@ -7,18 +7,24 @@
  * - Redirecionar para dashboard
  */
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@contexts/AuthContext'
 import { Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
+
 export function GoogleCallbackPage() {
+  const hasRun = useRef(false)
   const navigate = useNavigate()
   const { setToken } = useAuth()
   const [searchParams] = useSearchParams()
 
   useEffect(() => {
+    if (hasRun.current) return
+
+    hasRun.current = true
+
     const token = searchParams.get('token')
     const error = searchParams.get('error')
 

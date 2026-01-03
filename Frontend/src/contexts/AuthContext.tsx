@@ -11,85 +11,141 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { jwtDecode } from 'jwt-decode'
 import { authService } from '@services/authService'
-import {
-  User,
-  AuthContextType,
-  // LoginRequest,
-  RegisterRequest,
-  // UserRole,
-} from '@/types'
+import { AuthUser, AuthContextType, RegisterRequest, UserRole } from '@/types'
+
 
 // Criar contexto
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+// Tipagem mínima do JWT
+interface JwtPayload {
+  exp: number
+  name?: string
+  emailaddress?: string
+  role?: string
+  nameidentifier?: string
+  sub?: string
+}
+
+const mapRoleFromToken = (role?: string): UserRole => {
+  switch (role) {
+    case 'Tutor':
+      return UserRole.Tutor
+    case 'Veterinarian':
+      return UserRole.Veterinarian
+    case 'Admin':
+      return UserRole.Admin
+    default:
+      return UserRole.Tutor
+  }
+}
+
 // Provider
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-const [token, setTokenState] = useState<string | null>(null)
+  const [user, setUser] = useState<AuthUser | null>(null) 
+  const [token, setTokenState] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Carregar usuário do localStorage ao montar
+  // 🔁 Carregar sessão salva
   useEffect(() => {
     const savedToken = localStorage.getItem('token')
     const savedUser = localStorage.getItem('user')
 
-    if (savedToken && savedUser) {
+    if (savedToken) {
       try {
-        // Verificar se token não expirou
-        const decoded = jwtDecode<{ exp: number }>(savedToken)
+        const decoded = jwtDecode<JwtPayload>(savedToken)
         const now = Date.now() / 1000
 
         if (decoded.exp > now) {
           setTokenState(savedToken)
-          setUser(JSON.parse(savedUser))
+
+          if (savedUser) {
+            setUser(JSON.parse(savedUser))
+          } else {
+            hydrateUserFromToken(savedToken)
+          }
         } else {
-          // Token expirado
-          authService.logout()
+          logout()
         }
-      } catch (error) {
-        console.error('Erro ao decodificar token:', error)
-        authService.logout()
+      } catch (err) {
+        console.error('Erro ao restaurar sessão:', err)
+        logout()
       }
     }
 
     setIsLoading(false)
   }, [])
 
-  // Função de login
+  // 🔐 Decodifica JWT e cria usuário
+  const hydrateUserFromToken = (jwt: string) => {
+  const decoded = jwtDecode<JwtPayload>(jwt)
+
+  const userFromToken: AuthUser = {
+    id: decoded.sub || decoded.nameidentifier || '',
+    name: decoded.name || '',
+    email: decoded.emailaddress || '',
+    role: mapRoleFromToken(decoded.role),
+  }
+
+    setUser(userFromToken)
+    localStorage.setItem('user', JSON.stringify(userFromToken))
+  }
+
+  // 🔑 Login normal
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     try {
       const response = await authService.login({ email, password })
-      setTokenState(response.token)
+      setToken(response.token)
       setUser(response.user)
+      localStorage.setItem('user', JSON.stringify(response.user))
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Função de registro
+  // 📝 Registro
   const register = async (data: RegisterRequest) => {
     setIsLoading(true)
     try {
       const response = await authService.register(data)
-      setTokenState(response.token)
+      setToken(response.token)
       setUser(response.user)
+      localStorage.setItem('user', JSON.stringify(response.user))
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Função de logout
+  // 🚪 Logout
   const logout = () => {
     authService.logout()
     setTokenState(null)
     setUser(null)
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('user')
   }
 
   const setToken = (token: string) => {
-    setUser(null) // Será preenchido após decodificar o token
+    const decoded = jwtDecode<{
+      nameid: string
+      emailaddress: string
+      name: string
+      role: string
+    }>(token)
+
+    const userFromToken: AuthUser = {
+      id: decoded.nameid,
+      name: decoded.name,
+      email: decoded.emailaddress,
+      role: decoded.role as UserRole,
+    }
+
     setTokenState(token)
-    localStorage.setItem('authToken', token)
+    setUser(userFromToken)
+
+    localStorage.setItem('token', token)
+    localStorage.setItem('user', JSON.stringify(userFromToken))
   }
 
   const value: AuthContextType = {
@@ -98,8 +154,8 @@ const [token, setTokenState] = useState<string | null>(null)
     isAuthenticated: !!token && !!user,
     isLoading,
     login,
-    logout,
     register,
+    logout,
     setToken,
   }
 

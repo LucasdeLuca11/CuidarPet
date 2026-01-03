@@ -81,7 +81,7 @@ public class User
     /// Ex: "Clínica", "PetShop", "Consultório", "Grooming"
     /// </summary>
     [StringLength(100)]
-    public string? CompanyType { get; set; }
+    public CompanyType? CompanyType { get; set; }
 
     /// <summary>
     /// Descrição da empresa/serviços oferecidos

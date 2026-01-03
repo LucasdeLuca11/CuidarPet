@@ -40,7 +40,7 @@ export default function ClinicAppointmentsPage() {
       return;
     }
 
-    if (user?.role !== "Veterinarian" && user?.role !== "Admin") {
+    if (user?.role !== 1 && user?.role !== 2) {
       navigate("/owner");
       return;
     }

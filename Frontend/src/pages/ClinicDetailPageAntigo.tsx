@@ -69,7 +69,7 @@ export default function ClinicDetailPage() {
       return;
     }
 
-    if (user?.role !== "Tutor") {
+    if (user?.role !== 0) {
       navigate("/clinic");
       return;
     }
