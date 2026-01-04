@@ -22,18 +22,18 @@ interface JwtPayload {
   exp: number
   name?: string
   emailaddress?: string
-  role?: string
+  role?: number
   nameidentifier?: string
   sub?: string
 }
 
-const mapRoleFromToken = (role?: string): UserRole => {
+const mapRoleFromToken = (role?: number): UserRole => {
   switch (role) {
-    case 'Tutor':
+    case 0:
       return UserRole.Tutor
-    case 'Veterinarian':
+    case 1:
       return UserRole.Veterinarian
-    case 'Admin':
+    case 2:
       return UserRole.Admin
     default:
       return UserRole.Tutor
@@ -131,7 +131,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       nameid: string
       emailaddress: string
       name: string
-      role: string
+      role: number
     }>(token)
 
     const userFromToken: AuthUser = {

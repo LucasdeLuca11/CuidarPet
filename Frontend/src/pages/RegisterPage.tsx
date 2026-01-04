@@ -27,10 +27,10 @@ export function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: undefined, // ou Tutor por padrão
+    role: selectedRole, // ou Tutor por padrão
     companyName: '',
     companyDocument: '',
-    companyType: undefined,      // ⚠️ NÃO é string
+    companyType: undefined as CompanyType | undefined,
     companyDescription: '',
   })
 
@@ -115,8 +115,7 @@ export function RegisterPage() {
       }
 
       // Validar senha
-      const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[^\s]{8,}$/
 
       if (!passwordRegex.test(formData.password)) {
         setError(
@@ -183,11 +182,19 @@ export function RegisterPage() {
 
 
       // Chamar função de registro
+      // await register({
+      //   name: formData.name,
+      //   email: formData.email,
+      //   password: formData.password,
+      //   confirmPassword: formData.confirmPassword,
+      //   role: selectedRole || UserRole.Tutor,
+      //   companyName: formData.companyName,
+      //   companyDocument: formData.companyDocument,
+      //   companyType: formData.companyType,  
+      //   companyDescription: formData.companyDescription,
+      // })
       await register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
+        ...formData,
         role: selectedRole || UserRole.Tutor,
       })
 

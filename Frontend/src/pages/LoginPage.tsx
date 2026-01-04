@@ -196,10 +196,10 @@ export function LoginPage() {
 
           {/* Links Adicionais */}
           <div className="mt-6 pt-6 border-t border-gray-200 flex justify-between text-xs text-gray-500">
-            <a href="#" className="hover:text-gray-700 transition-colors">
+            <a href="/forgot-password" className="hover:text-gray-700 transition-colors">
               Esqueceu a senha?
             </a>
-            <a href="#" className="hover:text-gray-700 transition-colors">
+            <a href="/help" className="hover:text-gray-700 transition-colors">
               Precisa de ajuda?
             </a>
           </div>
@@ -209,11 +209,11 @@ export function LoginPage() {
         <div className="text-center mt-8 text-sm text-gray-600">
           <p>
             Ao entrar, você concorda com nossos{' '}
-            <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">
+            <a href="/terms" className="text-primary-600 hover:text-primary-700 font-medium">
               Termos de Serviço
             </a>{' '}
             e{' '}
-            <a href="#" className="text-primary-600 hover:text-primary-700 font-medium">
+            <a href="/privacy" className="text-primary-600 hover:text-primary-700 font-medium">
               Política de Privacidade
             </a>
           </p>

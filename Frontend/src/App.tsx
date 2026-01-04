@@ -18,6 +18,11 @@ import { DashboardPage } from '@pages/DashboardPage'
 import { ForbiddenPage } from '@pages/ForbiddenPage'
 import { UserRole } from '@/types'
 import { GoogleCallbackPage } from '@pages/GoogleCallbackPage'
+import { ForgotPasswordPage } from '@pages/ForgotPasswordPage'
+import { HelpPage } from '@pages/HelpPage'
+import { NotFoundPage } from '@pages/NotFoundPage'
+import { TermsPage } from '@pages/TermsPage'
+import { PrivacyPage } from '@pages/PrivacyPage'
 
 function App() {
   return (
@@ -30,6 +35,10 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forbidden" element={<ForbiddenPage />} />
           <Route path="/auth/callback" element={<GoogleCallbackPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/help" element={<HelpPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
 
           {/* Rotas Protegidas */}
           <Route
@@ -118,7 +127,8 @@ function App() {
           </Route>
 
           {/* Rota Padrão */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />  {/* alterar */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

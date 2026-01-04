@@ -1,0 +1,35 @@
+📋 PÁGINAS QUE FALTAM ❌ (27 páginas)
+
+Para Tutores (15 páginas)
+Meus Pets
+Detalhes do Pet
+Criar/Editar Pet
+Buscar Clínicas
+Detalhes da Clínica
+Agendar Serviço
+Meus Agendamentos
+Detalhes do Agendamento
+Avaliar Serviço
+Perfil
+
+Para Veterinários (9 páginas)
+Dashboard Clínica
+Minha Clínica
+Serviços
+Criar/Editar Serviço
+Agendamentos
+Detalhes do Agendamento
+Funcionários
+Avaliações
+Perfil
+
+Para Admin (5 páginas)
+Admin Dashboard
+Usuários
+Clínicas
+Relatórios
+Configurações
+
+Compartilhadas (2 páginas)
+Perfil
+Notificações

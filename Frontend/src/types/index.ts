@@ -56,7 +56,12 @@ export interface RegisterRequest {
   password: string
   confirmPassword: string
   role: UserRole
+  companyName?: string
+  companyDocument?: string
+  companyType?: CompanyType
+  companyDescription?: string
 }
+
 
 // ============================================
 // Pets

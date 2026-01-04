@@ -34,7 +34,7 @@ public class RegisterDto
     [Required(ErrorMessage = "Senha é obrigatória")]
     [StringLength(255, MinimumLength = 8, ErrorMessage = "Senha deve ter no mínimo 8 caracteres")]
     [RegularExpression(
-        @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+        @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[^\s]{8,}$",
         ErrorMessage = "Senha deve conter letras maiúsculas, minúsculas, números e caracteres especiais"
     )]
     public string Password { get; set; } = string.Empty;
