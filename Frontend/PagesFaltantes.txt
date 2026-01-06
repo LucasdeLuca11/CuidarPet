@@ -1,6 +1,6 @@
 📋 PÁGINAS QUE FALTAM ❌ (27 páginas)
 
-Para Tutores (15 páginas)
+Para Tutores (10 páginas)
 Meus Pets
 Detalhes do Pet
 Criar/Editar Pet
@@ -29,7 +29,3 @@ Usuários
 Clínicas
 Relatórios
 Configurações
-
-Compartilhadas (2 páginas)
-Perfil
-Notificações

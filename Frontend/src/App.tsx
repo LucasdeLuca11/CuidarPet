@@ -5,24 +5,36 @@
  * - Configurar rotas
  * - Prover contexto de autenticação
  * - Gerenciar layout
+ * - Integrar Navbar
+ * - Rotas de Pets
  */
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from '@contexts/AuthContext'
 import { PrivateRoute } from '@/components/PrivateRoute'
+import { Navbar } from '@components/Navbar'
 import Layout from '@components/Layout'
+
+// Páginas Públicas
 import { LoginPage } from '@pages/LoginPage'
 import { RegisterPage } from '@pages/RegisterPage'
-import { DashboardPage } from '@pages/DashboardPage'
 import { ForbiddenPage } from '@pages/ForbiddenPage'
-import { UserRole } from '@/types'
 import { GoogleCallbackPage } from '@pages/GoogleCallbackPage'
 import { ForgotPasswordPage } from '@pages/ForgotPasswordPage'
 import { HelpPage } from '@pages/HelpPage'
 import { NotFoundPage } from '@pages/NotFoundPage'
 import { TermsPage } from '@pages/TermsPage'
 import { PrivacyPage } from '@pages/PrivacyPage'
+
+// Páginas Protegidas
+import { DashboardPage } from '@pages/DashboardPage'
+import { ProfilePage } from '@pages/ProfilePage'
+import { MyPetsPage } from '@pages/MyPetsPage'
+import { PetDetailsPage } from '@pages/PetDetailsPage'
+import { CreateEditPetPage } from '@pages/CreateEditPetPage'
+
+import { UserRole } from '@/types'
 
 function App() {
   return (
@@ -44,7 +56,10 @@ function App() {
           <Route
             element={
               <PrivateRoute>
-                <Layout />
+                <>
+                  <Navbar />
+                  <Layout />
+                </>
               </PrivateRoute>
             }
           >
@@ -52,30 +67,44 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
 
             {/* Rotas do Tutor */}
+            {/* Pets */}
             <Route
               path="/pets"
               element={
                 <PrivateRoute allowedRoles={[UserRole.Tutor, UserRole.Admin]}>
-                  <div className="p-8">
-                    <h1 className="text-3xl font-bold">Meus Pets</h1>
-                    <p className="text-gray-600 mt-2">Em desenvolvimento...</p>
-                  </div>
+                  <MyPetsPage />
                 </PrivateRoute>
               }
             />
 
             <Route
-              path="/appointments"
+              path="/pets/create"
               element={
                 <PrivateRoute allowedRoles={[UserRole.Tutor, UserRole.Admin]}>
-                  <div className="p-8">
-                    <h1 className="text-3xl font-bold">Meus Agendamentos</h1>
-                    <p className="text-gray-600 mt-2">Em desenvolvimento...</p>
-                  </div>
+                  <CreateEditPetPage />
                 </PrivateRoute>
               }
             />
 
+            <Route
+              path="/pets/:petId"
+              element={
+                <PrivateRoute allowedRoles={[UserRole.Tutor, UserRole.Admin]}>
+                  <PetDetailsPage />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/pets/:petId/edit"
+              element={
+                <PrivateRoute allowedRoles={[UserRole.Tutor, UserRole.Admin]}>
+                  <CreateEditPetPage />
+                </PrivateRoute>
+              }
+            />
+
+            {/* Clínicas */}
             <Route
               path="/clinics"
               element={
@@ -88,7 +117,20 @@ function App() {
               }
             />
 
-            {/* Rotas do Veterinário */}
+            {/* Agendamentos */}
+            <Route
+              path="/appointments"
+              element={
+                <PrivateRoute allowedRoles={[UserRole.Tutor, UserRole.Admin]}>
+                  <div className="p-8">
+                    <h1 className="text-3xl font-bold">Meus Agendamentos</h1>
+                    <p className="text-gray-600 mt-2">Em desenvolvimento...</p>
+                  </div>
+                </PrivateRoute>
+              }
+            />
+
+            {/* ===== ROTAS DO VETERINÁRIO ===== */}
             <Route
               path="/clinic"
               element={
@@ -124,10 +166,13 @@ function App() {
                 </PrivateRoute>
               }
             />
+
+            {/* ===== PÁGINAS COMPARTILHADAS ===== */}
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
 
-          {/* Rota Padrão */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />  {/* alterar */}
+          {/* ===== FALLBACK ===== */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AuthProvider>
