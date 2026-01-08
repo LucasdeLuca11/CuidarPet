@@ -63,37 +63,37 @@ public class User
     // CAMPOS ESPECÍFICOS PARA VETERINÁRIOS/PETSHOPS
     // ========================================================================
 
-    /// <summary>
-    /// Nome da empresa/clínica/petshop (apenas para Veterinários)
-    /// </summary>
-    [StringLength(255)]
-    public string? CompanyName { get; set; }
+    // /// <summary>
+    // /// Nome da empresa/clínica/petshop (apenas para Veterinários)
+    // /// </summary>
+    // [StringLength(255)]
+    // public string? CompanyName { get; set; }
 
-    /// <summary>
-    /// CNPJ da empresa (apenas para Veterinários)
-    /// Formato: XX.XXX.XXX/XXXX-XX
-    /// </summary>
-    [StringLength(18)]
-    public string? CompanyDocument { get; set; }
+    // /// <summary>
+    // /// CNPJ da empresa (apenas para Veterinários)
+    // /// Formato: XX.XXX.XXX/XXXX-XX
+    // /// </summary>
+    // [StringLength(18)]
+    // public string? CompanyDocument { get; set; }
 
-    /// <summary>
-    /// Tipo de empresa (apenas para Veterinários)
-    /// Ex: "Clínica", "PetShop", "Consultório", "Grooming"
-    /// </summary>
-    [StringLength(100)]
-    public CompanyType? CompanyType { get; set; }
+    // /// <summary>
+    // /// Tipo de empresa (apenas para Veterinários)
+    // /// Ex: "Clínica", "PetShop", "Consultório", "Grooming"
+    // /// </summary>
+    // [StringLength(100)]
+    // public CompanyType? CompanyType { get; set; }
 
-    /// <summary>
-    /// Descrição da empresa/serviços oferecidos
-    /// </summary>
-    [StringLength(1000)]
-    public string? CompanyDescription { get; set; }
+    // /// <summary>
+    // /// Descrição da empresa/serviços oferecidos
+    // /// </summary>
+    // [StringLength(1000)]
+    // public string? CompanyDescription { get; set; }
 
-    /// <summary>
-    /// URL da logo/foto da empresa
-    /// </summary>
-    [StringLength(500)]
-    public string? CompanyLogo { get; set; }
+    // /// <summary>
+    // /// URL da logo/foto da empresa
+    // /// </summary>
+    // [StringLength(500)]
+    // public string? CompanyLogo { get; set; }
 
     // ========================================================================
     // CAMPOS DE STATUS E VERIFICAÇÃO

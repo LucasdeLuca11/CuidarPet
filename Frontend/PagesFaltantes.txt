@@ -1,11 +1,6 @@
-📋 PÁGINAS QUE FALTAM ❌ (27 páginas)
+📋 PÁGINAS QUE FALTAM ❌ (24 páginas)
 
 Para Tutores (10 páginas)
-Meus Pets
-Detalhes do Pet
-Criar/Editar Pet
-Buscar Clínicas
-Detalhes da Clínica
 Agendar Serviço
 Meus Agendamentos
 Detalhes do Agendamento

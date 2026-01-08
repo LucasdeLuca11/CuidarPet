@@ -56,10 +56,6 @@ export interface RegisterRequest {
   password: string
   confirmPassword: string
   role: UserRole
-  companyName?: string
-  companyDocument?: string
-  companyType?: CompanyType
-  companyDescription?: string
 }
 
 
@@ -160,6 +156,13 @@ export interface Appointment {
   createdAt: string
   updatedAt: string
 }
+
+export interface AppointmentView extends Appointment {
+  serviceName?: string
+  clinicName?: string
+  servicePrice?: number
+}
+
 
 export interface CreateAppointmentRequest {
   petId: string

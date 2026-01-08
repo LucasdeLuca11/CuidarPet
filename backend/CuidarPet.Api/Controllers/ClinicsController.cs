@@ -359,6 +359,53 @@ public class ClinicsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// NOVO: Lista clínicas disponíveis para o usuário
+    /// 
+    /// - Tutores: Veem TODAS as clínicas ativas
+    /// - Veterinários: Veem suas próprias clínicas
+    /// - Admin: Vê todas as clínicas
+    /// 
+    /// Rota: GET /api/clinics/available
+    /// Autorização: Requer autenticação
+    /// </summary>
+    [Authorize]
+    [HttpGet("available")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<List<Clinic>>> GetAvailableClinics()
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+            var userRole = GetCurrentUserRole();
+
+            IQueryable<Clinic> query = _context.Clinics
+                .Include(c => c.Services.Where(s => s.IsActive))
+                .Include(c => c.Reviews)
+                .Where(c => c.IsActive); // Apenas clínicas ativas
+
+            // Filtrar por role
+            if (userRole == UserRole.Veterinarian.ToString())
+            {
+                // Veterinários veem apenas suas clínicas
+                query = query.Where(c => c.OwnerId == userId);
+            }
+
+            var clinics = await query
+                .OrderByDescending(c => c.CreatedAt)
+                .ToListAsync();
+
+            return Ok(clinics);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Erro ao listar clínicas disponíveis: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                new { message = "Erro ao listar clínicas disponíveis" });
+        }
+    }
+
     // ========================================================================
     // MÉTODOS AUXILIARES
     // ========================================================================

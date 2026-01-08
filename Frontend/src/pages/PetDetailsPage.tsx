@@ -11,9 +11,14 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Edit2, Calendar, Trash2, Loader } from 'lucide-react'
+import toast from 'react-hot-toast'
+
 import { petService } from '@services/petService'
 import { appointmentService } from '@services/appointmentService'
-import toast from 'react-hot-toast'
+
+import { AppointmentView , AppointmentStatus } from '@/types'
+
+
 
 interface Pet {
   id: string
@@ -22,32 +27,32 @@ interface Pet {
   breed: string
   weight: number
   dateOfBirth: string
-//   color: string
-  userId: number
+  // color: string
+  userId: string
   createdAt: string
   updatedAt: string
 }
 
-interface Appointment {
-  id: number
-  petId: string
-  clinicId: number
-  serviceId: number
-  appointmentDate: string
-  status: number // 0 = Scheduled, 1 = Completed, 2 = Cancelled
-  createdAt: string
-  updatedAt: string
-  // Dados relacionados (do backend)
-  serviceName?: string
-  clinicName?: string
-  servicePrice?: number
-}
+// interface Appointment {
+//   id: string
+//   petId: string
+//   clinicId: string
+//   serviceId: string
+//   appointmentDate: string
+//   status: AppointmentStatus // 0 = Scheduled, 1 = Completed, 2 = Cancelled
+//   createdAt: string
+//   updatedAt: string
+//   // Dados relacionados (do backend)
+//   serviceName?: string
+//   clinicName?: string
+//   servicePrice?: number
+// }
 
 export function PetDetailsPage() {
   const { petId } = useParams<{ petId: string }>()
   const navigate = useNavigate()
   const [pet, setPet] = useState<Pet | null>(null)
-  const [appointments, setAppointments] = useState<Appointment[]>([])
+  const [appointments, setAppointments] = useState<AppointmentView[]>([])
   const [loading, setLoading] = useState(true)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
 
@@ -71,13 +76,15 @@ export function PetDetailsPage() {
         return
       }
 
-      // Buscar dados do pet (Alterar)
-    //   const petData = await petService.getPetById((petId))
-    //   setPet(petData)
+      // Buscar dados do pet
+      const petData = await petService.getPetById((petId))
+      setPet(petData)
 
-    //   // Buscar agendamentos do pet
-    //   const appointmentsData = await appointmentService.getAppointmentsByPet(parseInt(petId))
-    //   setAppointments(appointmentsData)
+      // Buscar agendamentos do pet
+      // ✅ Agora funciona perfeitamente
+      const appointmentsData = await appointmentService.getAppointmentsByPet((petId))
+      setAppointments(appointmentsData) // ✅ Appointment[] = Appointment[]
+
     } catch (error) {
       console.error('Erro ao carregar detalhes do pet:', error)
       toast.error('Erro ao carregar detalhes do pet')
@@ -106,13 +113,13 @@ export function PetDetailsPage() {
   /**
    * Retorna cor do badge baseado no status
    */
-  const getStatusColor = (status: number): string => {
+  const getStatusColor = (status: AppointmentStatus): string => {
     switch (status) {
-      case 0: // Scheduled
+      case 'Scheduled': // Scheduled
         return 'bg-blue-100 text-blue-800'
-      case 1: // Completed
+      case 'Completed': // Completed
         return 'bg-green-100 text-green-800'
-      case 2: // Cancelled
+      case 'Cancelled': // Cancelled
         return 'bg-red-100 text-red-800'
       default:
         return 'bg-gray-100 text-gray-800'
@@ -122,13 +129,13 @@ export function PetDetailsPage() {
   /**
    * Retorna texto do status
    */
-  const getStatusText = (status: number): string => {
+  const getStatusText = (status: AppointmentStatus): string => {
     switch (status) {
-      case 0:
+      case 'Scheduled':
         return 'Agendado'
-      case 1:
+      case 'Completed':
         return 'Concluído'
-      case 2:
+      case 'Cancelled':
         return 'Cancelado'
       default:
         return 'Desconhecido'

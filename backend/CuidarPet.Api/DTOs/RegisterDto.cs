@@ -64,30 +64,30 @@ public class RegisterDto
     // CAMPOS ESPECÍFICOS PARA VETERINÁRIOS (role: 1)
     // ========================================================================
 
-    /// <summary>
-    /// Nome da empresa/clínica/petshop (obrigatório para Veterinários)
-    /// </summary>
-    [StringLength(255, MinimumLength = 3, ErrorMessage = "Nome da empresa deve ter entre 3 e 255 caracteres")]
-    public string? CompanyName { get; set; }
+    // /// <summary>
+    // /// Nome da empresa/clínica/petshop (obrigatório para Veterinários)
+    // /// </summary>
+    // [StringLength(255, MinimumLength = 3, ErrorMessage = "Nome da empresa deve ter entre 3 e 255 caracteres")]
+    // public string? CompanyName { get; set; }
 
-    /// <summary>
-    /// CNPJ da empresa (obrigatório para Veterinários)
-    /// Formato: XX.XXX.XXX/XXXX-XX
-    /// </summary>
-    [StringLength(18)]
-    [RegularExpression(@"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$", ErrorMessage = "CNPJ inválido")]
-    public string? CompanyDocument { get; set; }
+    // /// <summary>
+    // /// CNPJ da empresa (obrigatório para Veterinários)
+    // /// Formato: XX.XXX.XXX/XXXX-XX
+    // /// </summary>
+    // [StringLength(18)]
+    // [RegularExpression(@"^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$", ErrorMessage = "CNPJ inválido")]
+    // public string? CompanyDocument { get; set; }
 
-    /// <summary>
-    /// Tipo de empresa (obrigatório para Veterinários)
-    /// </summary>
-    public CompanyType? CompanyType { get; set; }
+    // /// <summary>
+    // /// Tipo de empresa (obrigatório para Veterinários)
+    // /// </summary>
+    // public CompanyType? CompanyType { get; set; }
 
-    /// <summary>
-    /// Descrição da empresa/serviços oferecidos (opcional)
-    /// </summary>
-    [StringLength(1000)]
-    public string? CompanyDescription { get; set; }
+    // /// <summary>
+    // /// Descrição da empresa/serviços oferecidos (opcional)
+    // /// </summary>
+    // [StringLength(1000)]
+    // public string? CompanyDescription { get; set; }
 
     // ========================================================================
     // VALIDAÇÃO CUSTOMIZADA
@@ -101,17 +101,17 @@ public class RegisterDto
         errors = new List<string>();
 
         // Validar campos obrigatórios para Veterinários
-        if (Role == (int)UserRole.Veterinarian)
-        {
-            if (string.IsNullOrWhiteSpace(CompanyName))
-                errors.Add("Nome da empresa é obrigatório para Veterinários");
+        // if (Role == (int)UserRole.Veterinarian)
+        // {
+        //     if (string.IsNullOrWhiteSpace(CompanyName))
+        //         errors.Add("Nome da empresa é obrigatório para Veterinários");
 
-            if (string.IsNullOrWhiteSpace(CompanyDocument))
-                errors.Add("CNPJ é obrigatório para Veterinários");
+        //     if (string.IsNullOrWhiteSpace(CompanyDocument))
+        //         errors.Add("CNPJ é obrigatório para Veterinários");
 
-            if (!CompanyType.HasValue)
-                errors.Add("Tipo de empresa é obrigatório para Veterinários");
-        }
+        //     if (!CompanyType.HasValue)
+        //         errors.Add("Tipo de empresa é obrigatório para Veterinários");
+        // }
 
         // Admin não pode ser registrado via API (apenas pelo sistema)
         if (Role == (int)UserRole.Admin)

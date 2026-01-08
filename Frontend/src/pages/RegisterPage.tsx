@@ -13,7 +13,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '@contexts/AuthContext'
 import { Mail, Lock, User, AlertCircle, Loader2, Chrome, CheckCircle, Building2, FileText, Briefcase } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { CompanyType, UserRole } from '@/types'
+import { UserRole } from '@/types'
 
 export function RegisterPage() {
   const navigate = useNavigate()
@@ -27,11 +27,7 @@ export function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: selectedRole, // ou Tutor por padrão
-    companyName: '',
-    companyDocument: '',
-    companyType: undefined as CompanyType | undefined,
-    companyDescription: '',
+    role: selectedRole
   })
 
 
@@ -68,28 +64,10 @@ export function RegisterPage() {
 
     let finalValue: any = value
 
-    if (name === 'companyDocument') {
-      finalValue = formatCNPJ(value)
-    }
-
-    if (name === 'companyType') {
-      finalValue = value ? Number(value) : undefined
-    }
-
     setFormData(prev => ({
       ...prev,
       [name]: finalValue
     }))
-  }
-
-
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-       ...prev,
-       [name]: value 
-      }))
-      setError('')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -132,67 +110,6 @@ export function RegisterPage() {
         return
       }
 
-      // // Validar dados da empresa
-      if (selectedRole === UserRole.Veterinarian) {
-
-        // Nome da empresa
-        if (!formData.companyName || formData.companyName.trim().length < 3) {
-          setError('Nome da empresa deve ter no mínimo 3 caracteres')
-          setLoading(false)
-          return
-        }
-
-        if (formData.companyName.length > 255) {
-          setError('Nome da empresa deve ter no máximo 255 caracteres')
-          setLoading(false)
-          return
-        }
-
-        // CNPJ
-        if (!formData.companyDocument) {
-          setError('CNPJ é obrigatório para Veterinários')
-          setLoading(false)
-          return
-        }
-
-        const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/
-        if (!cnpjRegex.test(formData.companyDocument)) {
-          setError('CNPJ inválido. Use o formato XX.XXX.XXX/XXXX-XX')
-          setLoading(false)
-          return
-        }
-
-        // Tipo da empresa
-        if (!formData.companyType) {
-            setError('Tipo de empresa é obrigatório para Veterinários')
-            setLoading(false)
-            return
-          }
-
-        // Descrição (opcional)
-        if (
-          formData.companyDescription &&
-          formData.companyDescription.length > 1000
-        ) {
-          setError('Descrição da empresa deve ter no máximo 1000 caracteres')
-          setLoading(false)
-          return
-        }
-      }
-
-
-      // Chamar função de registro
-      // await register({
-      //   name: formData.name,
-      //   email: formData.email,
-      //   password: formData.password,
-      //   confirmPassword: formData.confirmPassword,
-      //   role: selectedRole || UserRole.Tutor,
-      //   companyName: formData.companyName,
-      //   companyDocument: formData.companyDocument,
-      //   companyType: formData.companyType,  
-      //   companyDescription: formData.companyDescription,
-      // })
       await register({
         ...formData,
         role: selectedRole || UserRole.Tutor,
@@ -274,26 +191,6 @@ export function RegisterPage() {
                     </p>
                   </div>
                 </div>
-              </button>
-
-              {/* Divisor */}
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Ou continue com</span>
-                </div>
-              </div>
-
-              {/* Botão Google */}
-              <button
-                type="button"
-                onClick={handleGoogleLogin}
-                className="w-full bg-white border-2 border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all flex items-center justify-center gap-2"
-              >
-                <Chrome className="w-5 h-5" />
-                Registrar com Google
               </button>
 
               {/* Link para Login */}
@@ -414,113 +311,25 @@ export function RegisterPage() {
                 </div>
               </div>
 
-              {/* Campos exclusivos para Veterinário */}
-              {selectedRole === UserRole.Veterinarian && (
-                <div className="space-y-4 mt-6">
-
-                  <h4 className="text-sm font-semibold text-gray-700">
-                    Dados da Empresa
-                  </h4>
-
-                  {/* Nome da Empresa */}
-                  <div>
-                    <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-2">
-                      Nome da Empresa
-                    </label>
-                    <div className="relative">
-                      <Building2 className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                      <input
-                        id="companyName"
-                        name="companyName"
-                        type="text"
-                        value={formData.companyName}
-                        onChange={handleInputChange}
-                        placeholder="Clínica, Petshop ou Consultório"
-                        maxLength={255}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                        disabled={loading}
-                      />
-                    </div>
-                  </div>
-
-                  {/* CNPJ */}
-                  <div>
-                    <label htmlFor="companyDocument" className="block text-sm font-medium text-gray-700 mb-2">
-                      CNPJ
-                    </label>
-                    <div className="relative">
-                      <FileText className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                      <input
-                        id="companyDocument"
-                        name="companyDocument"
-                        type="text"
-                        value={formData.companyDocument}
-                        onChange={handleInputChange}
-                        placeholder="00.000.000/0000-00"
-                        maxLength={18}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                        disabled={loading}
-                      />
-                    </div>
-                  </div>
-
-                    {/* Tipo da Empresa */}
-                    <div>
-                      <label
-                        htmlFor="companyType"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                      >
-                        Tipo de Empresa
-                      </label>
-
-                      <div className="relative">
-                        <Briefcase className="absolute left-3 top-3 w-5 h-5 text-gray-400 pointer-events-none" />
-
-                        <select
-                          id="companyType"
-                          name="companyType"
-                          value={formData.companyType ?? ''}
-                          onChange={handleInputChange}
-                          disabled={loading}
-                          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg bg-white
-                                    focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                        >
-                          <option value="">Selecione o tipo</option>
-
-                          <option value={CompanyType.Clinica}>Clínica</option>
-                          <option value={CompanyType.PetShop}>Pet Shop</option>
-                          <option value={CompanyType.ConsultorioVeterinario}>Consultório Veterinário</option>
-                          <option value={CompanyType.Grooming}>Grooming</option>
-                          <option value={CompanyType.HospitalVeterinario}>Hospital Veterinário</option>
-                          <option value={CompanyType.CrechePet}>Creche Pet</option>
-                        </select>
-                      </div>
-                    </div>
-
-
-                  {/* Descrição da Empresa (Opcional) */}
-                  <div>
-                    <label htmlFor="companyDescription" className="block text-sm font-medium text-gray-700 mb-2">
-                      Descrição dos Serviços (Opcional)
-                    </label>
-                    <textarea
-                      id="companyDescription"
-                      name="companyDescription"
-                      value={formData.companyDescription}
-                      onChange={handleTextareaChange}
-                      placeholder="Descreva brevemente os serviços oferecidos"
-                      maxLength={1000}
-                      rows={4}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none"
-                      disabled={loading}
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      Máximo de 1000 caracteres
-                    </p>
-                  </div>
-
+              {/* Divisor */}
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300"></div>
                 </div>
-              )}
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-gray-500">Ou continue com</span>
+                </div>
+              </div>
+
+              {/* Botão Google */}
+              <button
+                type="button"
+                onClick={handleGoogleLogin}
+                className="w-full bg-white border-2 border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all flex items-center justify-center gap-2"
+              >
+                <Chrome className="w-5 h-5" />
+                Registrar com Google
+              </button>
 
               {/* Erro */}
               {error && (

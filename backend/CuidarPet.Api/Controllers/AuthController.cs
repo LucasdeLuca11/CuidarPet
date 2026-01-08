@@ -69,33 +69,25 @@ public class AuthController : ControllerBase
         if (email == null)
             return BadRequest("Email não encontrado no Google");
 
-        // 1️⃣ Buscar usuário no banco
+        // 🔍 Buscar usuário
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
-        // 2️⃣ Criar se não existir
+        // ❗ Usuário NÃO existe → completar cadastro
         if (user == null)
         {
-            user = new User
-            {
-                Id = Guid.NewGuid(),
-                Name = name ?? "Usuário Google",
-                Email = email,
-                Role = UserRole.Tutor,
-                IsActive = true,
-                CreatedAt = DateTime.UtcNow
-            };
+            var redirectRegisterUrl =
+                $"http://localhost:5173/register/google?email={email}&name={Uri.EscapeDataString(name ?? "")}";
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            return Redirect(redirectRegisterUrl);
         }
 
-        // 3️⃣ Gerar JWT
+        // 🔐 Usuário existe → login normal
         var token = _jwtTokenService.GenerateToken(user);
 
-        // 4️⃣ Redirecionar para o frontend
         var frontendUrl = $"http://localhost:5173/auth/callback?token={token}";
         return Redirect(frontendUrl);
     }
+
 
     /// <summary>
     /// Registra um novo usuário no sistema
@@ -152,15 +144,6 @@ public class AuthController : ControllerBase
                 LastSignedIn = DateTime.UtcNow
             };
 
-            // Se for Veterinário, adicionar dados da empresa
-            if (dto.Role == (int)UserRole.Veterinarian)
-            {
-                user.CompanyName = dto.CompanyName;
-                user.CompanyDocument = dto.CompanyDocument;
-                user.CompanyType = dto.CompanyType;
-                user.CompanyDescription = dto.CompanyDescription;
-            }
-
             // Salvar no banco
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -179,7 +162,7 @@ public class AuthController : ControllerBase
                     Name = user.Name,
                     Email = user.Email,
                     Role = user.Role.ToString(),
-                    CompanyName = user.CompanyName,
+                    // CompanyName = user.CompanyName,
                     Phone = user.Phone,
                     CreatedAt = user.CreatedAt
                 }
@@ -252,7 +235,7 @@ public class AuthController : ControllerBase
                     Name = user.Name,
                     Email = user.Email,
                     Role = user.Role.ToString(),
-                    CompanyName = user.CompanyName,
+                    // CompanyName = user.CompanyName,
                     Phone = user.Phone,
                     CreatedAt = user.CreatedAt
                 }
@@ -354,11 +337,6 @@ public class UserResponse
     /// Papel do usuário (Tutor, Veterinarian, Admin)
     /// </summary>
     public string Role { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Nome da empresa (se Veterinário)
-    /// </summary>
-    public string? CompanyName { get; set; }
 
     /// <summary>
     /// Telefone do usuário

@@ -22,6 +22,17 @@ export const appointmentService = {
     return response.data
   },
 
+    /**
+   * Obter detalhes de um agendamento específico para o pet
+   * @param PetID ID do Pet
+   * @returns Dados do agendamento
+   */
+  getAppointmentsByPet: async (petId: string): Promise<Appointment[]> => {
+    const response = await api.get<Appointment[]>(`/appointments/pet/${petId}`)
+    return response.data || []
+  },
+
+
   /**
    * Criar novo agendamento
    * @param data Dados do novo agendamento

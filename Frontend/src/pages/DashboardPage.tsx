@@ -19,7 +19,7 @@ import { UserRole } from '@/types'
 export function DashboardPage() {
   const { user } = useAuth()
   const { data: pets } = useApi(() => petService.listPets(), true)
-  const { data: clinics } = useApi(() => clinicService.listClinics(), true)
+  const { data: clinics } = useApi(() => clinicService.getClinics(), true)
 
   const isTutor = user?.role === UserRole.Tutor
   const isVeterinarian = user?.role === UserRole.Veterinarian

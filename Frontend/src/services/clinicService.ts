@@ -14,15 +14,6 @@ import { Clinic, CreateClinicRequest, UpdateClinicRequest } from '@/types'
 
 export const clinicService = {
   /**
-   * Listar todas as clínicas
-   * @returns Lista de clínicas
-   */
-  listClinics: async (): Promise<Clinic[]> => {
-    const response = await api.get<Clinic[]>('/clinics')
-    return response.data
-  },
-
-  /**
    * Obter detalhes de uma clínica específica
    * @param clinicId ID da clínica
    * @returns Dados da clínica
@@ -30,6 +21,20 @@ export const clinicService = {
   getClinicById: async (clinicId: string): Promise<Clinic> => {
     const response = await api.get<Clinic>(`/clinics/${clinicId}`)
     return response.data
+  },
+
+   getAvailableClinics: async (): Promise<Clinic[]> => {
+    const response = await api.get<Clinic[]>('/clinics/available')
+    return response.data || []
+  },
+
+   /**
+   * Listar todas as clínicas
+   * @returns Lista de clínicas
+   */
+  getClinics: async (): Promise<Clinic[]> => {
+    const response = await api.get<Clinic[]>('/clinics')
+    return response.data || []
   },
 
   /**

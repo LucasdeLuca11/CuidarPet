@@ -20,12 +20,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 // Tipagem mínima do JWT
 interface JwtPayload {
   exp: number
-  name?: string
-  emailaddress?: string
-  role?: number
-  nameidentifier?: string
   sub?: string
+  role?: number
+
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"?: string
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"?: string
+  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"?: string
 }
+
 
 const mapRoleFromToken = (role?: number): UserRole => {
   switch (role) {
@@ -81,14 +83,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const decoded = jwtDecode<JwtPayload>(jwt)
 
   const userFromToken: AuthUser = {
-    id: decoded.sub || decoded.nameidentifier || '',
-    name: decoded.name || '',
-    email: decoded.emailaddress || '',
-    role: mapRoleFromToken(decoded.role),
+  id:
+    decoded.sub ||
+    decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] ||
+    '',
+  name:
+    decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || '',
+  email:
+    decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] || '',
+  role: mapRoleFromToken(decoded.role),
   }
 
-    setUser(userFromToken)
-    localStorage.setItem('user', JSON.stringify(userFromToken))
+  setUser(userFromToken)
+  localStorage.setItem('user', JSON.stringify(userFromToken))
   }
 
   // 🔑 Login normal
@@ -127,18 +134,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const setToken = (token: string) => {
-    const decoded = jwtDecode<{
-      nameid: string
-      emailaddress: string
-      name: string
-      role: number
-    }>(token)
+    const decoded = jwtDecode<JwtPayload>(token)
 
     const userFromToken: AuthUser = {
-      id: decoded.nameid,
-      name: decoded.name,
-      email: decoded.emailaddress,
-      role: decoded.role as UserRole,
+      id:
+        decoded.sub ||
+        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] ||
+        '',
+      name:
+        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] || '',
+      email:
+        decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] || '',
+      role: mapRoleFromToken(decoded.role),
     }
 
     setTokenState(token)
@@ -147,6 +154,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('token', token)
     localStorage.setItem('user', JSON.stringify(userFromToken))
   }
+
 
   const value: AuthContextType = {
     user,

@@ -351,6 +351,72 @@ public class AppointmentsController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Obtém todos os agendamentos de um pet específico
+    /// GET: api/appointments/pet/{petId}
+    /// </summary>
+    /// <param name="petId">ID do pet</param>
+    /// <returns>Lista de agendamentos do pet</returns>
+    /// <summary>
+    /// Obtém todos os agendamentos de um pet específico
+    /// GET: api/appointments/pet/{petId}
+    /// </summary>
+    [HttpGet("pet/{petId}")]
+    [Authorize(Roles = "Tutor,Admin")]
+    public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointmentsByPet(Guid petId)
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+            var userRole = GetCurrentUserRole();
+
+            // Verificar se o pet existe
+            var pet = await _context.Pets.FirstOrDefaultAsync(p => p.Id == petId);
+
+            if (pet == null)
+            {
+                return NotFound(new { message = "Pet não encontrado" });
+            }
+
+            // Tutor só pode acessar seus próprios pets
+            if (userRole == UserRole.Tutor.ToString() && pet.OwnerId != userId)
+            {
+                return Forbid();
+            }
+
+            // Buscar agendamentos do pet
+            var appointments = await _context.Appointments
+                .Where(a => a.PetId == petId)
+                .Include(a => a.Service)
+                .Include(a => a.Clinic)
+                .OrderByDescending(a => a.ScheduledDate)
+                .ToListAsync();
+
+            // Mapear para DTO
+            var appointmentDtos = appointments.Select(a => new AppointmentDto
+            {
+                Id = a.Id,
+                PetId = a.PetId,
+                ClinicId = a.ClinicId,
+                ServiceId = a.ServiceId,
+                AppointmentDate = a.ScheduledDate,
+                Status = a.Status,
+                CreatedAt = a.CreatedAt,
+                UpdatedAt = a.UpdatedAt,
+                ServiceName = a.Service?.Name ?? "Serviço",
+                ClinicName = a.Clinic?.Name ?? "Clínica",
+                ServicePrice = a.Service?.Price ?? 0
+            }).ToList();
+
+            return Ok(appointmentDtos);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Erro ao buscar agendamentos do pet {petId}: {ex.Message}");
+            return StatusCode(500, new { message = "Erro ao buscar agendamentos" });
+        }
+    }
+
     // ========================================================================
     // MÉTODOS AUXILIARES
     // ========================================================================
